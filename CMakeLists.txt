@@ -31,26 +31,45 @@
 #
 ############################################################################
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-add_subdirectory(ActuatorEffectiveness)
-add_subdirectory(ControlAllocation)
-
-px4_add_module(
-	MODULE modules__control_allocator
-	MAIN control_allocator
-	COMPILE_FLAGS
-		${MAX_CUSTOM_OPT_LEVEL}
-	STACK_MAIN
-		3000
-	SRCS
-		ControlAllocator.cpp
-		ControlAllocator.hpp
-	MODULE_CONFIG
-		module.yaml
-	DEPENDS
-		mathlib
-		ActuatorEffectiveness
-		ControlAllocation
-		px4_work_queue
-		SlewRate
+px4_add_library(ActuatorEffectiveness
+	ActuatorEffectiveness.cpp
+	ActuatorEffectiveness.hpp
+	ActuatorEffectivenessUUV.cpp
+	ActuatorEffectivenessUUV.hpp
+	ActuatorEffectivenessControlSurfaces.cpp
+	ActuatorEffectivenessControlSurfaces.hpp
+	ActuatorEffectivenessCustom.cpp
+	ActuatorEffectivenessCustom.hpp
+	ActuatorEffectivenessFixedWing.cpp
+	ActuatorEffectivenessFixedWing.hpp
+	ActuatorEffectivenessHelicopter.cpp
+	ActuatorEffectivenessHelicopter.hpp
+	ActuatorEffectivenessHelicopterCoaxial.cpp
+	ActuatorEffectivenessHelicopterCoaxial.hpp
+	ActuatorEffectivenessMCTilt.cpp
+	ActuatorEffectivenessMCTilt.hpp
+	ActuatorEffectivenessMultirotor.cpp
+	ActuatorEffectivenessMultirotor.hpp
+	ActuatorEffectivenessTilts.cpp
+	ActuatorEffectivenessTilts.hpp
+	ActuatorEffectivenessRotors.cpp
+	ActuatorEffectivenessRotors.hpp
+	ActuatorEffectivenessStandardVTOL.cpp
+	ActuatorEffectivenessStandardVTOL.hpp
+	ActuatorEffectivenessTiltrotorVTOL.cpp
+	ActuatorEffectivenessTiltrotorVTOL.hpp
+	ActuatorEffectivenessTailsitterVTOL.cpp
+	ActuatorEffectivenessTailsitterVTOL.hpp
+	ActuatorEffectivenessRoverAckermann.hpp
+	ActuatorEffectivenessRoverAckermann.cpp
 )
+
+target_compile_options(ActuatorEffectiveness PRIVATE ${MAX_CUSTOM_OPT_LEVEL})
+target_include_directories(ActuatorEffectiveness PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(ActuatorEffectiveness
+	PRIVATE
+		mathlib
+)
+
+px4_add_functional_gtest(SRC ActuatorEffectivenessHelicopterTest.cpp LINKLIBS ActuatorEffectiveness)
+px4_add_functional_gtest(SRC ActuatorEffectivenessRotorsTest.cpp LINKLIBS ActuatorEffectiveness)
